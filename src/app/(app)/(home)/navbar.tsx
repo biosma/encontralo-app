@@ -80,14 +80,18 @@ export const Navbar = () => {
           variant="secondary"
           className="border-0 border-l px-12 h-full rounded-none bg-white hover:bg-pink-400 transition-colors text-lg"
         >
-          <Link href="sign-in">Log in</Link>
+          <Link prefetch href="sign-in">
+            Log in
+          </Link>
         </Button>
         <Button
           asChild
           variant="secondary"
           className="border-0 border-l px-12 h-full rounded-none bg-black text-white hover:bg-pink-400 hover:text-black transition-colors text-lg"
         >
-          <Link href="sign-up">Start selling</Link>
+          <Link prefetch href="sign-up">
+            Start selling
+          </Link>
         </Button>
       </div>
       <div className="items-center justify-center gap-4 flex lg:hidden">

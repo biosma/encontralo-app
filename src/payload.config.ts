@@ -1,18 +1,19 @@
 // storage-adapter-import-placeholder
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import path from 'path'
-import { buildConfig } from 'payload'
-import { fileURLToPath } from 'url'
-import sharp from 'sharp'
+import { mongooseAdapter } from '@payloadcms/db-mongodb';
+import { payloadCloudPlugin } from '@payloadcms/payload-cloud';
+import { lexicalEditor } from '@payloadcms/richtext-lexical';
+import path from 'path';
+import { buildConfig } from 'payload';
+import sharp from 'sharp';
+import { fileURLToPath } from 'url';
 
-import { Users } from './collections/Users'
-import { Media } from './collections/Media'
-import { Categories } from './collections/Categories'
+import { Categories } from './collections/Categories';
+import { Media } from './collections/Media';
+import { Products } from './collections/Products';
+import { Users } from './collections/Users';
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 export default buildConfig({
   admin: {
@@ -21,7 +22,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Categories],
+  collections: [Users, Media, Categories, Products],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -35,4 +36,4 @@ export default buildConfig({
     payloadCloudPlugin(),
     // storage-adapter-placeholder
   ],
-})
+});

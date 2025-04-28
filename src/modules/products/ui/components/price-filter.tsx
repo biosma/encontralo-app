@@ -18,9 +18,9 @@ export const formatAsCurrency = (value: string) => {
   if (!formattedValue) return '';
   const numberValue = parseFloat(formattedValue);
   if (isNaN(numberValue)) return '';
-  return new Intl.NumberFormat('es-AR', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'ARS',
+    currency: 'USD',
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(numberValue);

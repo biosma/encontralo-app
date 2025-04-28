@@ -2,6 +2,9 @@ import type { CollectionConfig } from 'payload';
 
 export const Products: CollectionConfig = {
   slug: 'products',
+  admin: {
+    useAsTitle: 'name',
+  },
   fields: [
     {
       name: 'name',
@@ -17,7 +20,7 @@ export const Products: CollectionConfig = {
       type: 'number',
       required: true,
       admin: {
-        description: 'Precio en pesos',
+        description: 'Precio en dolares',
       },
     },
     { name: 'category', type: 'relationship', relationTo: 'categories', hasMany: false },
@@ -27,6 +30,12 @@ export const Products: CollectionConfig = {
       type: 'select',
       options: ['30_day', '14_day', '7_day', '3_day', '1_day', 'no_refunds'],
       defaultValue: '30_day',
+    },
+    {
+      name: 'tags',
+      type: 'relationship',
+      relationTo: 'tags',
+      hasMany: true,
     },
   ],
 };

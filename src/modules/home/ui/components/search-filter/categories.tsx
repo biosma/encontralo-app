@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { CategoriesGetManyOutput } from '@/modules/categories/types';
 import { ListFilterIcon } from 'lucide-react';
+import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 import { CategoriesSidebar } from './categories-sidebar';
@@ -14,6 +15,8 @@ interface CategoriesProps {
 }
 
 export const Categories = ({ data }: CategoriesProps) => {
+  const params = useParams();
+  const categoryParam = params.category as string | undefined;
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const viewAllRef = useRef<HTMLDivElement>(null);
@@ -22,7 +25,7 @@ export const Categories = ({ data }: CategoriesProps) => {
   const [isAnyHovered, setIsAnyHovered] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const activeCategory = 'all';
+  const activeCategory = categoryParam || 'all';
   const activeCategoryIndex = data.findIndex((category) => category.slug === activeCategory);
   const isActiveCategoryHidden = activeCategoryIndex >= visibleCount && activeCategoryIndex !== -1;
   useEffect(() => {

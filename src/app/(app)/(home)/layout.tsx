@@ -20,7 +20,7 @@ const Layout = async ({ children }: Props) => {
           <SearchFilters />
         </Suspense>
       </HydrationBoundary>
-      <div className="flex-1">{children}</div>
+      <div className="flex-1 px-4 lg:px-12 py-8 flex flex-col gap-4">{children}</div>
       <Footer />
     </div>
   );

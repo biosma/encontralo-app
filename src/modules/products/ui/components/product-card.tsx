@@ -1,13 +1,15 @@
+import { generateTenantUrl } from '@/lib/utils';
 import { StarIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface ProductCardProps {
   id: string;
   name: string;
   imageUrl?: string | null;
-  authorUsername: string;
-  authorImageUrl?: string | null;
+  tenantSlug: string;
+  tenantImageUrl?: string | null;
   reviewRating: number;
   reviewCount: number;
   price: number;
@@ -17,12 +19,18 @@ export const ProductCard = ({
   id,
   name,
   imageUrl,
-  authorUsername,
-  authorImageUrl,
+  tenantSlug,
+  tenantImageUrl,
   reviewRating,
   reviewCount,
   price,
 }: ProductCardProps) => {
+  const router = useRouter();
+  const handleUserClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push(generateTenantUrl(tenantSlug));
+  };
   return (
     <Link href={`/product/${id}`}>
       <div className="hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-x-[4px] hover:-translate-y-[4px] transition-all border rounded-md bg:white overflow-hidden h-full flex flex-col">
@@ -31,17 +39,17 @@ export const ProductCard = ({
         </div>
         <div className="p-4 border-y flex flex-col gap-3 flex-1">
           <h2 className="text-lg font-medium line-clamp-4">{name}</h2>
-          <div className="flex items-center gap-2">
-            {authorImageUrl && (
+          <div className="flex items-center gap-2" onClick={handleUserClick}>
+            {tenantImageUrl && (
               <Image
-                alt={authorUsername}
+                alt={tenantSlug}
                 className="size-[16px] shrink-0 border rounded-full"
-                src={authorImageUrl}
+                src={tenantImageUrl}
                 width={16}
                 height={16}
               />
             )}
-            <p className="text-sm underline font-medium">{authorUsername}</p>
+            <p className="text-sm underline font-medium">{tenantSlug}</p>
           </div>
           {reviewCount > 0 && (
             <div className="flex items-center gap-1">

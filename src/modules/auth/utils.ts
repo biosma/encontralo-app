@@ -8,7 +8,7 @@ interface Props {
 export const generateAuthCookie = async ({ prefix, value }: Props) => {
   const cookies = await getCookies();
   cookies.set({
-    name: `${prefix}-token$`,
+    name: `${prefix}-token`,
     value: value,
     httpOnly: true,
     path: '/',

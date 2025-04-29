@@ -16,17 +16,16 @@ interface Props {
 export const ProductList = ({ category }: Props) => {
   const [filters] = useProductFilters();
   const trpc = useTRPC();
-  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useSuspenseInfiniteQuery(
-      trpc.products.getMany.infiniteQueryOptions(
-        { category, ...filters, limit: DEFAULT_LIMIT },
-        {
-          getNextPageParam: (lastPage) => {
-            return lastPage.docs.length > 0 ? lastPage.nextPage : undefined;
-          },
+  const { data, isFetchingNextPage, hasNextPage, fetchNextPage } = useSuspenseInfiniteQuery(
+    trpc.products.getMany.infiniteQueryOptions(
+      { category, ...filters, limit: DEFAULT_LIMIT },
+      {
+        getNextPageParam: (lastPage) => {
+          return lastPage.docs.length > 0 ? lastPage.nextPage : undefined;
         },
-      ),
-    );
+      },
+    ),
+  );
 
   if (data?.pages?.[0]?.docs.length === 0) {
     return (

@@ -4,14 +4,13 @@ import Link from 'next/link';
 interface SubcategoryMenuProps {
   category: CategoriesGetManyOutputSingle;
   isOpen: boolean;
-  dropdownPosition: { top: number; left: number };
 }
 
-export const SubcategoryMenu = ({ category, isOpen, dropdownPosition }: SubcategoryMenuProps) => {
+export const SubcategoryMenu = ({ category, isOpen }: SubcategoryMenuProps) => {
   if (!isOpen || !category.subcategories || category.subcategories.length === 0) return null;
   const backgroundColor = category.color ? category.color : '#F5F5F5';
   return (
-    <div className="fixed z-100" style={{ top: dropdownPosition.top, left: dropdownPosition.left }}>
+    <div className="absolute z-100" style={{ top: '100%', left: 0 }}>
       <div className="h-3 w-60" />
       <div
         style={{ backgroundColor }}

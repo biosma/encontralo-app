@@ -1,6 +1,7 @@
 import { DEFAULT_LIMIT } from '@/constants';
 import { Category, Media, Tenant } from '@/payload-types';
 import { baseProcedure, createTRPCRouter } from '@/tRPC/init';
+import { TRPCError } from '@trpc/server';
 import { Sort, Where } from 'payload';
 import { z } from 'zod';
 
@@ -90,6 +91,28 @@ export const productsRouter = createTRPCRouter({
           image: doc.image as Media | null,
           tenant: doc.tenant as Tenant & { image: Media | null },
         })),
+      };
+    }),
+  getOne: baseProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const productsData = await ctx.payload.findByID({
+        collection: 'products',
+        id: input.id,
+      });
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (!productsData) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' });
+      }
+      // return productsData as Product & { image: Media | null };
+      return {
+        ...productsData,
+        image: productsData.image as Media | null,
+        tenant: productsData.tenant as Tenant & { image: Media | null },
       };
     }),
 });

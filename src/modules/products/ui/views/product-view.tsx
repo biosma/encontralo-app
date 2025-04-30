@@ -7,6 +7,7 @@ import { formatCurrency, generateTenantUrl } from '@/lib/utils';
 import { useTRPC } from '@/tRPC/client';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { LinkIcon, StarIcon } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment } from 'react';
@@ -15,6 +16,19 @@ interface ProductViewProps {
   productId: string;
   tenantSlug: string;
 }
+// To prevent hydration errors we import cart button dynamically because local storage is not available on the server
+const CartButton = dynamic(
+  () => import('../components/cart-button').then((mod) => mod.CartButton),
+  {
+    ssr: false,
+    loading: () => (
+      <Button variant={'elevated'} disabled className="flex-1 bg-pink-300">
+        Add to cart
+      </Button>
+    ),
+  },
+);
+
 export function ProductView({ productId, tenantSlug }: ProductViewProps) {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.products.getOne.queryOptions({ id: productId }));
@@ -78,9 +92,7 @@ export function ProductView({ productId, tenantSlug }: ProductViewProps) {
             <div className="border-t lg:border-t-0 lg:border-l h-full">
               <div className="flex flex-col gap-4 p-6 border-b">
                 <div className="flex flex-row items-center gap-2">
-                  <Button variant={'elevated'} className="flex-1 bg-pink-300">
-                    Add to cart
-                  </Button>
+                  <CartButton tenantSlug={tenantSlug} productId={productId} />
                   <Button
                     variant={'elevated'}
                     className="size-12"

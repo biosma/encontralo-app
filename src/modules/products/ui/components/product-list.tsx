@@ -24,7 +24,7 @@ export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
       { ...filters, tenantSlug, category, limit: DEFAULT_LIMIT },
       {
         getNextPageParam: (lastPage) => {
-          return lastPage.docs.length > 0 ? lastPage.nextPage : undefined;
+          return lastPage.docs?.length > 0 ? lastPage.nextPage : undefined;
         },
       },
     ),

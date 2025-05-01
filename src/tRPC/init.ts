@@ -1,5 +1,6 @@
 import configPromise from '@payload-config';
-import { initTRPC } from '@trpc/server';
+import { TRPCError, initTRPC } from '@trpc/server';
+import { headers as getHeaders } from 'next/headers';
 import { getPayload } from 'payload';
 import { cache } from 'react';
 import superjson from 'superjson';
@@ -31,6 +32,28 @@ export const baseProcedure = t.procedure.use(async ({ next }) => {
   return next({
     ctx: {
       payload,
+    },
+  });
+});
+
+export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
+  const headers = await getHeaders();
+  const session = await ctx.payload.auth({ headers });
+  if (!session.user) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'Unauthorized',
+    });
+  }
+
+  // Los spreads aseguran que se infiera el tipo en procedures, sino user puede ser null
+  return next({
+    ctx: {
+      ...ctx,
+      session: {
+        ...session,
+        user: session.user,
+      },
     },
   });
 });

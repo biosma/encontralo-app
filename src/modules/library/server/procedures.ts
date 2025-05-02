@@ -1,5 +1,5 @@
 import { DEFAULT_LIMIT } from '@/constants';
-import { Media, Tenant } from '@/payload-types';
+import { Media, Review, Tenant } from '@/payload-types';
 import { createTRPCRouter, protectedProcedure } from '@/tRPC/init';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
@@ -80,28 +80,71 @@ export const libraryRouter = createTRPCRouter({
         },
       });
 
-      const dataWithSummarizedReviews = await Promise.all(
-        productsData.docs.map(async (doc) => {
-          const reviewsData = await ctx.payload.find({
-            collection: 'reviews',
-            pagination: false,
-            where: {
-              product: {
-                equals: doc.id,
-              },
-            },
-          });
-          return {
-            ...doc,
-            reviewCount: reviewsData.totalDocs,
-            reviewRating:
-              reviewsData.docs.length === 0
-                ? 0
-                : reviewsData.docs.reduce((acc, review) => acc + review.rating, 0) /
-                  reviewsData.totalDocs,
-          };
-        }),
+      // const dataWithSummarizedReviews = await Promise.all(
+      //   productsData.docs.map(async (doc) => {
+      //     const reviewsData = await ctx.payload.find({
+      //       collection: 'reviews',
+      //       pagination: false,
+      //       where: {
+      //         product: {
+      //           equals: doc.id,
+      //         },
+      //       },
+      //     });
+      //     return {
+      //       ...doc,
+      //       reviewCount: reviewsData.totalDocs,
+      //       reviewRating:
+      //         reviewsData.docs.length === 0
+      //           ? 0
+      //           : reviewsData.docs.reduce((acc, review) => acc + review.rating, 0) /
+      //             reviewsData.totalDocs,
+      //     };
+      //   }),
+      // );
+
+      // This resolve the problem of n+1 queries {
+      const productIdsArray = productsData.docs.map((doc) => doc.id);
+
+      // Just one req for all the reviews of above (productIdsArray)
+      const allReviewsData = await ctx.payload.find({
+        collection: 'reviews',
+        pagination: false,
+        where: {
+          product: {
+            in: productIdsArray,
+          },
+        },
+      });
+
+      const reviewsByProductId = allReviewsData.docs.reduce<Record<string, Review[]>>(
+        (acc, review) => {
+          // This is because review.product can be a string or an object type Product
+          const productId =
+            typeof review.product === 'string' ? review.product : review.product?.id;
+          if (!acc[productId]) {
+            acc[productId] = [];
+          }
+          acc[productId].push(review);
+          return acc;
+        },
+        {},
       );
+
+      const dataWithSummarizedReviews = productsData.docs.map((doc) => {
+        const productReviews = reviewsByProductId[doc.id] || [];
+        const reviewCount = productReviews.length;
+        const reviewRating =
+          reviewCount === 0
+            ? 0
+            : productReviews.reduce((acc, review) => acc + review.rating, 0) / reviewCount;
+        return {
+          ...doc,
+          reviewCount,
+          reviewRating,
+        };
+      });
+      // }
 
       return {
         ...productsData,

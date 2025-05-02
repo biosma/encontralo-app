@@ -2,6 +2,7 @@ import { DEFAULT_LIMIT } from '@/constants';
 import { Category, Media, Tenant } from '@/payload-types';
 import { baseProcedure, createTRPCRouter } from '@/tRPC/init';
 import { TRPCError } from '@trpc/server';
+import { headers as getHeaders } from 'next/headers';
 import { Sort, Where } from 'payload';
 import { z } from 'zod';
 
@@ -100,10 +101,37 @@ export const productsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      const headers = await getHeaders();
+      const session = await ctx.payload.auth({ headers });
       const productsData = await ctx.payload.findByID({
         collection: 'products',
         id: input.id,
       });
+
+      let isPurchased = false;
+      if (session?.user) {
+        const ordersData = await ctx.payload.find({
+          collection: 'orders',
+          pagination: false,
+          limit: 1,
+          where: {
+            and: [
+              {
+                product: {
+                  equals: input.id,
+                },
+              },
+              {
+                user: {
+                  equals: session.user.id,
+                },
+              },
+            ],
+          },
+        });
+
+        isPurchased = !!ordersData.docs[0];
+      }
       // await new Promise((resolve) => setTimeout(resolve, 2000));
       if (!productsData) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' });
@@ -111,6 +139,7 @@ export const productsRouter = createTRPCRouter({
       // return productsData as Product & { image: Media | null };
       return {
         ...productsData,
+        isPurchased,
         image: productsData.image as Media | null,
         tenant: productsData.tenant as Tenant & { image: Media | null },
       };

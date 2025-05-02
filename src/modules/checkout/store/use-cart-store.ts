@@ -11,14 +11,17 @@ interface CartState {
   removeProduct: (tenantSlug: string, productId: string) => void;
   clearCart: (tenantSlug: string) => void;
   clearAllCarts: () => void;
-  getCartByTenant: (tenantSlug: string) => string[];
+  // getCartByTenant: (tenantSlug: string) => string[];
 }
 // TODO: Hacer un carrito global, ya que solo genera uno por tenant si no tenemos los detalles de compania en stripe connect
 // This could be a global store, but for business logic reasons we'll keep this way(stripe connect doesnt allow fee for products with different tenants)
 
 export const useCartStore = create<CartState>()(
   persist(
-    (set, get) => ({
+    (
+      set,
+      // get
+    ) => ({
       tenantCarts: {},
       addProduct: (tenantSlug, productId) =>
         set((state) => ({
@@ -44,7 +47,7 @@ export const useCartStore = create<CartState>()(
           tenantCarts: { ...state.tenantCarts, [tenantSlug]: { productIds: [] } },
         })),
       clearAllCarts: () => set({ tenantCarts: {} }),
-      getCartByTenant: (tenantSlug) => get().tenantCarts[tenantSlug]?.productIds || [],
+      // getCartByTenant: (tenantSlug) => get().tenantCarts[tenantSlug]?.productIds || [],
     }),
     {
       name: 'encontralo-cart',

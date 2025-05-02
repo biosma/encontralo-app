@@ -18,6 +18,7 @@ export const SearchInput = ({ disabled }: Props) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const trpc = useTRPC();
   const session = useQuery(trpc.auth.session.queryOptions());
+  // TODO: Hidration error on <Link href={'/library'}>
   return (
     <div className="flex items-center gap-2 w-full">
       <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
@@ -34,8 +35,8 @@ export const SearchInput = ({ disabled }: Props) => {
       </Button>
       {session.data?.user && (
         <Button asChild variant="elevated">
-          <Link href={'/library'}>
-            <BookmarkCheckIcon /> library
+          <Link prefetch href={'/library'}>
+            <BookmarkCheckIcon /> Library
           </Link>
         </Button>
       )}

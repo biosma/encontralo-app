@@ -1,8 +1,8 @@
-import { CategoriesGetManyOutputSingle } from '@/modules/categories/types';
+import { CategoriesGetManyOutput } from '@/modules/categories/types';
 import Link from 'next/link';
 
 interface SubcategoryMenuProps {
-  category: CategoriesGetManyOutputSingle;
+  category: CategoriesGetManyOutput[1];
   isOpen: boolean;
 }
 

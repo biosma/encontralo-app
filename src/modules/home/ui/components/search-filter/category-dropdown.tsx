@@ -2,14 +2,14 @@
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { CategoriesGetManyOutputSingle } from '@/modules/categories/types';
+import { CategoriesGetManyOutput } from '@/modules/categories/types';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 
 import { SubcategoryMenu } from './subcategory-menu';
 
 interface Props {
-  category: CategoriesGetManyOutputSingle;
+  category: CategoriesGetManyOutput[1];
   isActive?: boolean;
   isNavigarionHovered?: boolean;
 }

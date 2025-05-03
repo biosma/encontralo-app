@@ -83,6 +83,9 @@ export const productsRouter = createTRPCRouter({
         sort,
         page: input.cursor,
         limit: input.limit,
+        select: {
+          content: false,
+        },
       });
 
       // Usamos promise all para poder hacer un map asyncrono
@@ -130,6 +133,9 @@ export const productsRouter = createTRPCRouter({
       const productsData = await ctx.payload.findByID({
         collection: 'products',
         id: input.id,
+        select: {
+          content: false,
+        },
       });
 
       let isPurchased = false;

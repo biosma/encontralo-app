@@ -31,6 +31,9 @@ export const checkoutRouter = createTRPCRouter({
             },
           ],
         },
+        select: {
+          content: false,
+        },
       });
       if (products.totalDocs !== input.productIds.length) {
         throw new TRPCError({
@@ -117,6 +120,9 @@ export const checkoutRouter = createTRPCRouter({
           id: {
             in: input.ids,
           },
+        },
+        select: {
+          content: false,
         },
       });
 

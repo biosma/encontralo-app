@@ -1,5 +1,5 @@
 import { DEFAULT_LIMIT } from '@/constants';
-import { Media, Review, Tenant } from '@/payload-types';
+import { Media, Product, Review, Tenant } from '@/payload-types';
 import { createTRPCRouter, protectedProcedure } from '@/tRPC/init';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
@@ -39,6 +39,9 @@ export const libraryRouter = createTRPCRouter({
       const product = await ctx.payload.findByID({
         collection: 'products',
         id: input.productId,
+        select: {
+          content: false,
+        },
       });
       if (!product) {
         throw new TRPCError({
@@ -46,7 +49,7 @@ export const libraryRouter = createTRPCRouter({
           message: 'Product not found',
         });
       }
-      return product;
+      return product as Product;
     }),
   getMany: protectedProcedure
     .input(
@@ -77,6 +80,9 @@ export const libraryRouter = createTRPCRouter({
           id: {
             in: productIds,
           },
+        },
+        select: {
+          content: false,
         },
       });
 

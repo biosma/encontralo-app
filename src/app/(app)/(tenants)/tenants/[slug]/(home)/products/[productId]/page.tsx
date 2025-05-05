@@ -7,6 +7,8 @@ interface Props {
   params: Promise<{ productId: string; slug: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page({ params }: Props) {
   const { productId, slug } = await params;
   const queryClient = getQueryClient();

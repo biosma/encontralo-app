@@ -39,9 +39,6 @@ export const libraryRouter = createTRPCRouter({
       const product = await ctx.payload.findByID({
         collection: 'products',
         id: input.productId,
-        select: {
-          content: false,
-        },
       });
       if (!product) {
         throw new TRPCError({

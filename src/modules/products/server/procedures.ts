@@ -23,7 +23,11 @@ export const productsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const where: Where = {};
+      const where: Where = {
+        isArchived: {
+          not_equals: true,
+        },
+      };
       let sort: Sort = '-createdAt';
       if (input.sort === 'curated') {
         sort = '-createdAt';
@@ -42,6 +46,9 @@ export const productsRouter = createTRPCRouter({
       }
       if (input.tenantSlug) {
         where['tenant.slug'] = { equals: input.tenantSlug };
+      } else {
+        // If we are loading products outside of a tenant(marketplace), we want to show only public products
+        where['isPrivate'] = { not_equals: true };
       }
       if (input.category) {
         const categoryData = await ctx.payload.find({
@@ -137,6 +144,10 @@ export const productsRouter = createTRPCRouter({
           content: false,
         },
       });
+
+      if (productsData.isArchived) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' });
+      }
 
       let isPurchased = false;
       if (session?.user) {

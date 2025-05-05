@@ -139,12 +139,14 @@ const seed = async () => {
     config,
   });
 
+  // const account = await stripe.accounts.create({});
+
   // const adminTenant = await payload.create({
   //   collection: 'tenants',
   //   data: {
   //     name: 'Admin',
   //     slug: 'admin',
-  //     stripeAccountId: 'test',
+  //     stripeAccountId: account.id,
   //   },
   // });
 

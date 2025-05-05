@@ -34,10 +34,9 @@ export const Navbar = ({ slug }: Props) => {
             <Image
               src={data.image.url}
               alt={slug}
-              objectFit="cover"
               width={32}
               height={32}
-              className="size-[32px] rounded-full border shrink-0"
+              className="size-[32px] rounded-full border shrink-0 object-cover"
             />
           )}
           <p className="text-xl">{data.name}</p>

@@ -83,8 +83,8 @@ export async function POST(req: Request) {
         default:
           throw new Error(`Unhandled event: ${event.type}`);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.error(error);
       return NextResponse.json({ message: 'Webhook handler failed' }, { status: 500 });
     }
   }

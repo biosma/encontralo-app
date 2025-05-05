@@ -194,6 +194,6 @@ try {
   console.log('Seed successful');
   process.exit(0);
 } catch (error) {
-  console.log(error);
+  console.error(error);
   process.exit(1);
 }

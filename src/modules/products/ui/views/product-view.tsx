@@ -45,7 +45,7 @@ export function ProductView({ productId, tenantSlug }: ProductViewProps) {
             src={data.image?.url || '/placeholder.png'}
             alt={data.name}
             fill
-            objectFit="cover"
+            className="object-cover"
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-6">
@@ -158,7 +158,7 @@ export function ProductViewSkeleton() {
     <div className="px-4 lg:px-12 py-10">
       <div className="border rounded-sm bg-white overflow-hidden">
         <div className="relative aspect-[3.9] border-b">
-          <Image src={'/placeholder.png'} alt={'placeholder'} fill objectFit="cover" />
+          <Image src={'/placeholder.png'} alt={'placeholder'} fill className="object-cover" />
         </div>
       </div>
     </div>

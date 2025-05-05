@@ -49,7 +49,7 @@ export const CheckoutView = ({ tenantSlug }: CheckoutViewProps) => {
       setStates({ success: false, cancel: false });
       clearCart();
       queryClient.invalidateQueries(trpc.library.getMany.infiniteQueryFilter());
-      router.push('/libray');
+      router.push('/library');
     }
   }, [queryClient, trpc.library.getMany, states.success, clearCart, router, setStates]);
 

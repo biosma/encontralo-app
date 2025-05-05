@@ -11,6 +11,7 @@ interface Props {
     slug: string;
   }>;
 }
+export const dynamic = 'force-dynamic';
 
 export default async function Page({ params, searchParams }: Props) {
   const { slug } = await params;

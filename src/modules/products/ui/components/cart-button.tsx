@@ -13,9 +13,7 @@ export const CartButton = ({ tenantSlug, productId, isPurchased }: Props) => {
   const cart = useCart(tenantSlug);
   if (isPurchased) {
     <Button variant={'elevated'} asChild className="flex-1 font-medium bg-pink-300">
-      <Link prefetch href={`/libray/${productId}`}>
-        View in library
-      </Link>
+      <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/library/${productId}`}>View in library</Link>
     </Button>;
   }
   return (

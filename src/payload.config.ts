@@ -49,6 +49,7 @@ export default buildConfig({
       collections: {
         // here be control the things associated with the tenants
         products: {},
+        media: {},
       },
       tenantsArrayField: {
         includeDefaultField: false,

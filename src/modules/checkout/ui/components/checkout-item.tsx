@@ -27,7 +27,7 @@ export const CheckoutItem = ({
     <div className={cn('grid grid-cols-[8.5rem_1fr_auto] gap-4 pr-4', isLast && 'border-b')}>
       <div className="overflow-hidden border-r">
         <div className="relative aspect-square h-full">
-          <Image src={imageUrl || '/plaholder.png'} alt={name} fill className="object-cover" />
+          <Image src={imageUrl || '/placeholder.png'} alt={name} fill className="object-cover" />
         </div>
       </div>
       <div className="py-4 flex flex-col justify-between">

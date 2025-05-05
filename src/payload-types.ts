@@ -169,6 +169,9 @@ export interface Tenant {
    */
   slug: string;
   image?: (string | null) | Media;
+  /**
+   * Stripe Account ID associated with this store
+   */
   stripeAccountId: string;
   /**
    * You cannot create products until you submit your Stripe details
@@ -224,7 +227,21 @@ export interface Product {
   id: string;
   tenant?: (string | null) | Tenant;
   name: string;
-  description?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   /**
    * Precio en dolares
    */
@@ -236,7 +253,29 @@ export interface Product {
   /**
    * Protected content only visible to customers after purchase. Add product documentation, downloadable files, getting started guides, and bonus materias. Supports markdown format.
    */
-  content?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Archived products are not visible in your tenant
+   */
+  isArchived?: boolean | null;
+  /**
+   * If checked products are not visible in the marketplace at all
+   */
+  isPrivate?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -433,6 +472,8 @@ export interface ProductsSelect<T extends boolean = true> {
   refundPolicy?: T;
   tags?: T;
   content?: T;
+  isArchived?: T;
+  isPrivate?: T;
   updatedAt?: T;
   createdAt?: T;
 }

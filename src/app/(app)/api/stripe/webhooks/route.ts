@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: `Webhook error: ${errorMessage}` }, { status: 400 });
   }
   console.log(`✅ Event success: ${event.id}`);
-  const permittedEvents: string[] = ['checkout.session.completed'];
+  const permittedEvents: string[] = ['checkout.session.completed', 'account.updated'];
   const payload = await getPayload({ config });
   if (permittedEvents.includes(event.type)) {
     let data;
@@ -37,9 +37,15 @@ export async function POST(req: Request) {
             id: data.metadata.userId,
           });
           if (!user) throw new Error('User not found');
-          const expandedSession = await stripe.checkout.sessions.retrieve(data.id, {
-            expand: ['line_items.data.price.product'],
-          });
+          const expandedSession = await stripe.checkout.sessions.retrieve(
+            data.id,
+            {
+              expand: ['line_items.data.price.product'],
+            },
+            {
+              stripeAccount: event.account,
+            },
+          );
 
           if (!expandedSession.line_items?.data || !expandedSession.line_items?.data.length) {
             throw new Error('No line items found');
@@ -51,12 +57,28 @@ export async function POST(req: Request) {
               collection: 'orders',
               data: {
                 stripeCheckoutSessionId: data.id,
+                stripeAccountId: event.account,
                 user: user.id,
                 product: lineItem.price.product.metadata.id,
                 name: lineItem.price.product.name,
               },
             });
           }
+          break;
+        case 'account.updated':
+          data = event.data.object as Stripe.Account;
+          await payload.update({
+            collection: 'tenants',
+            where: {
+              stripeAccountId: {
+                equals: data.id,
+              },
+            },
+            data: {
+              // This also checks if the tenant loses its stripe details or is deleted
+              stripeDetailsSubmitted: data.details_submitted,
+            },
+          });
           break;
         default:
           throw new Error(`Unhandled event: ${event.type}`);

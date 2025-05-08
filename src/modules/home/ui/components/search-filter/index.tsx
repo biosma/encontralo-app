@@ -34,7 +34,7 @@ export const SearchFilters = () => {
     >
       <SearchInput
         defaultValue={filters.search}
-        onChange={(value) => setFilters({ search: value })}
+        onChange={(value) => setFilters({ ...filters, search: value })}
       />
       <div className="hidden lg:block">
         <Categories data={data} />

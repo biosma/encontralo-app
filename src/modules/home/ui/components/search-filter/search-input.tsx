@@ -21,14 +21,14 @@ export const SearchInput = ({ disabled, defaultValue, onChange }: Props) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const trpc = useTRPC();
   const session = useQuery(trpc.auth.session.queryOptions());
-  // TODO: Hidration error on <Link href={'/library'}>
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       onChange?.(searchValue);
     }, 800);
     return () => clearTimeout(timeoutId);
-  }, [searchValue, onChange]);
+  }, [searchValue]);
+
   return (
     <div className="flex items-center gap-2 w-full">
       <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />

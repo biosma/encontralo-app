@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev & stripe listen --forward-to localhost:3000/api/stripe/webhooks",
+    "dev": "next dev & stripe listen --forward-to localhost:3000/api/stripe/webhooks & npx react-scan@latest localhost:3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -67,6 +67,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",
     "react-resizable-panels": "^2.1.7",
+    "react-scan": "^0.3.3",
     "recharts": "^2.15.2",
     "server-only": "^0.0.1",
     "sonner": "^2.0.3",

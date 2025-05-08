@@ -20,8 +20,8 @@ export default async function Page({ params, searchParams }: Props) {
   const queryClient = getQueryClient();
   void queryClient.prefetchInfiniteQuery(
     trpc.products.getMany.infiniteQueryOptions({
-      category: subcategory,
       ...filters,
+      category: subcategory,
       limit: DEFAULT_LIMIT,
     }),
   );

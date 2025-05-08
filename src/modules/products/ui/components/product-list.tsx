@@ -19,7 +19,7 @@ interface Props {
 export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
   const [filters] = useProductFilters();
   const trpc = useTRPC();
-  // TODO: Error de length no existe, revisar
+
   const { data, isFetchingNextPage, hasNextPage, fetchNextPage } = useSuspenseInfiniteQuery(
     trpc.products.getMany.infiniteQueryOptions(
       { ...filters, tenantSlug, category, limit: DEFAULT_LIMIT },

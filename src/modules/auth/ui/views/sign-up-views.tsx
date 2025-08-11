@@ -68,7 +68,7 @@ export const SignUpView = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8 p-4 lg:p-16">
             <div className="flex items-center justify-between mb-8">
               <Link href={'/'}>
-                <span className={cn('text-2xl font-semibold', poppins.className)}>Encontralo</span>
+                <span className={cn('text-2xl font-semibold', poppins.className)}>FindIt</span>
               </Link>
               <Button
                 asChild
@@ -81,9 +81,7 @@ export const SignUpView = () => {
                 </Link>
               </Button>
             </div>
-            <h1 className="text-4xl font-medium">
-              Unite a los mas de 1,000 vendedores en encontralo!
-            </h1>
+            <h1 className="text-4xl font-medium">Join to the FindIt community!</h1>
             <FormField
               name="username"
               render={({ field }) => (

@@ -50,7 +50,7 @@ export const useCartStore = create<CartState>()(
       // getCartByTenant: (tenantSlug) => get().tenantCarts[tenantSlug]?.productIds || [],
     }),
     {
-      name: 'encontralo-cart',
+      name: 'findit-cart',
       storage: createJSONStorage(() => localStorage),
     },
   ),

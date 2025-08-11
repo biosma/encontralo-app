@@ -1,9 +1,10 @@
 {
-  "name": "encontralo-app",
+  "name": "findit-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev & stripe listen --forward-to localhost:3000/api/stripe/webhooks & npx react-scan@latest localhost:3000",
+    "dev": "next dev & stripe listen --forward-to localhost:3000/api/stripe/webhooks",
+    "dev scan": "next dev & stripe listen --forward-to localhost:3000/api/stripe/webhooks & npx react-scan@latest localhost:3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

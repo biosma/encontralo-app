@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "encontralo-app",
+      "name": "findit-app",
       "dependencies": {
         "@hookform/resolvers": "^5.0.1",
         "@payloadcms/db-mongodb": "3.36.1",

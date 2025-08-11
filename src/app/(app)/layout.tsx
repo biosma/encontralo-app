@@ -5,14 +5,15 @@ import { DM_Sans } from 'next/font/google';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 import './globals.css';
-import { ReactScan } from './react-scan';
+
+// import { ReactScan } from './react-scan';
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: 'Encontralo!',
+  title: 'FindIt!',
   description: 'Find your favorite products',
 };
 
@@ -23,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ReactScan />
+      {/* <ReactScan /> */}
       <body className={`${dmSans.className} antialiased`}>
         <NuqsAdapter>
           <TRPCReactProvider>{children}</TRPCReactProvider>

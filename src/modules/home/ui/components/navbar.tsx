@@ -68,7 +68,7 @@ export const Navbar = () => {
   return (
     <nav className="h-20 flex justify-between border-b font-medium bg-white">
       <Link href="/" className="pl-6 flex items-center">
-        <span className={cn('text-5xl font-semibold', poppins.className)}>Encontralo</span>
+        <span className={cn('text-5xl font-semibold', poppins.className)}>FindIt</span>
       </Link>
       <NavbarSidebar open={isOpen} onOpenChange={setIsOpen} items={navbarItems} />
       <div className="items-center gap-4 hidden lg:flex">

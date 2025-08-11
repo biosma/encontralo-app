@@ -49,7 +49,7 @@ export const SearchInput = ({ disabled, defaultValue, onChange }: Props) => {
       >
         <ListFilterIcon />
       </Button>
-      {session.data?.user && (
+      {session && session.data?.user && (
         <Button asChild variant="elevated">
           <Link prefetch href={'/library'}>
             <BookmarkCheckIcon /> Library

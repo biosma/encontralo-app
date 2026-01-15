@@ -3,20 +3,18 @@
 import { StarRating } from '@/components/start-rating';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { formatCurrency, generateTenantUrl } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 import { useTRPC } from '@/tRPC/client';
 import { RichText } from '@payloadcms/richtext-lexical/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { CheckCheckIcon, LinkIcon, StarIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Fragment, useState } from 'react';
 import { toast } from 'sonner';
 
 interface ProductViewProps {
   productId: string;
-  tenantSlug: string;
 }
 // To prevent hydration errors we import cart button dynamically because local storage is not available on the server
 const CartButton = dynamic(
@@ -31,7 +29,7 @@ const CartButton = dynamic(
   },
 );
 
-export function ProductView({ productId, tenantSlug }: ProductViewProps) {
+export function ProductView({ productId }: ProductViewProps) {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.products.getOne.queryOptions({ id: productId }));
 
@@ -59,20 +57,6 @@ export function ProductView({ productId, tenantSlug }: ProductViewProps) {
                   <p className="text-base font-medium">{formatCurrency(data.price)}</p>
                 </div>
               </div>
-              <div className="flex px-6 py-4 lg:border-r items-center justify-center">
-                <Link href={generateTenantUrl(tenantSlug)} className="flex gap-2 items-center">
-                  {data.tenant.image?.url && (
-                    <Image
-                      src={data.tenant.image?.url}
-                      alt={data.tenant.name}
-                      width={20}
-                      height={20}
-                      className="rounded-full border shrink-0 size-[20px]"
-                    />
-                  )}
-                  <p className="underline font-medium">{data.tenant.name}</p>
-                </Link>
-              </div>
               <div className="hidden lg:flex px-6 py-4 items-center justify-center">
                 <div className="flex items-center gap-2">
                   <StarRating rating={data.reviewRating} iconClassName="size-4" />
@@ -99,11 +83,7 @@ export function ProductView({ productId, tenantSlug }: ProductViewProps) {
             <div className="border-t lg:border-t-0 lg:border-l h-full">
               <div className="flex flex-col gap-4 p-6 border-b">
                 <div className="flex flex-row items-center gap-2">
-                  <CartButton
-                    isPurchased={data.isPurchased}
-                    tenantSlug={tenantSlug}
-                    productId={productId}
-                  />
+                  <CartButton isPurchased={data.isPurchased} productId={productId} />
                   <Button
                     variant={'elevated'}
                     className="size-12"
@@ -118,11 +98,11 @@ export function ProductView({ productId, tenantSlug }: ProductViewProps) {
                     {isCopied ? <CheckCheckIcon /> : <LinkIcon />}
                   </Button>
                 </div>
-                <p className="text-center font-medium">
+                {/* <p className="text-center font-medium">
                   {data.refundPolicy === 'no_refunds'
                     ? 'No refunds'
                     : `${data.refundPolicy} money back guarantee`}
-                </p>
+                </p> */}
               </div>
               <div className="p-6">
                 <div className="flex items-center justify-between">

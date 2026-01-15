@@ -12,17 +12,16 @@ import { ProductCard, ProductCardSkeleton } from './product-card';
 
 interface Props {
   category?: string;
-  tenantSlug?: string;
   narrowView?: boolean;
 }
 
-export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
+export const ProductList = ({ category, narrowView }: Props) => {
   const [filters] = useProductFilters();
   const trpc = useTRPC();
 
   const { data, isFetchingNextPage, hasNextPage, fetchNextPage } = useSuspenseInfiniteQuery(
     trpc.products.getMany.infiniteQueryOptions(
-      { ...filters, tenantSlug, category, limit: DEFAULT_LIMIT },
+      { ...filters, category, limit: DEFAULT_LIMIT },
       {
         getNextPageParam: (lastPage) => {
           return lastPage.docs?.length > 0 ? lastPage.nextPage : undefined;
@@ -56,8 +55,6 @@ export const ProductList = ({ category, tenantSlug, narrowView }: Props) => {
               id={product.id}
               name={product.name}
               imageUrl={product.image?.url}
-              tenantSlug={product.tenant?.slug}
-              tenantImageUrl={product.tenant?.image?.url}
               reviewRating={product.reviewRating}
               reviewCount={product.reviewCount}
               price={product.price}

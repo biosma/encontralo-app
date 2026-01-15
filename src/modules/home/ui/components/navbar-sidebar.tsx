@@ -40,13 +40,6 @@ export const NavbarSidebar = ({ items, open, onOpenChange }: Props) => {
             >
               Login in
             </Link>
-            <Link
-              href="sign-up"
-              onClick={() => onOpenChange(false)}
-              className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium"
-            >
-              Start selling
-            </Link>
           </div>
         </ScrollArea>
       </SheetContent>

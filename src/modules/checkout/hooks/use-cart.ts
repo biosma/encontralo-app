@@ -3,26 +3,23 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { useCartStore } from '../store/use-cart-store';
 
-export const useCart = (tenantSlug: string) => {
+export const useCart = () => {
   const addProduct = useCartStore((state) => state.addProduct);
   const removeProduct = useCartStore((state) => state.removeProduct);
   const clearCart = useCartStore((state) => state.clearCart);
-  const clearAllCarts = useCartStore((state) => state.clearAllCarts);
 
   // useShallow hara un mejor trabajo al comparar dos arrays
-  const productIds = useCartStore(
-    useShallow((state) => state.tenantCarts[tenantSlug]?.productIds || []),
-  );
+  const productIds = useCartStore(useShallow((state) => state.cart?.productIds || []));
 
   const toggleProduct = useCallback(
     (productId: string) => {
       if (productIds.includes(productId)) {
-        removeProduct(tenantSlug, productId);
+        removeProduct(productId);
       } else {
-        addProduct(tenantSlug, productId);
+        addProduct(productId);
       }
     },
-    [addProduct, removeProduct, productIds, tenantSlug],
+    [addProduct, removeProduct, productIds],
   );
 
   const isProductInCart = useCallback(
@@ -30,23 +27,23 @@ export const useCart = (tenantSlug: string) => {
     [productIds],
   );
 
-  const clearTenantCart = useCallback(() => clearCart(tenantSlug), [tenantSlug, clearCart]);
+  const clearTenantCart = useCallback(() => clearCart(), [clearCart]);
 
   const handleAddProduct = useCallback(
     (productId: string) => {
       if (!isProductInCart(productId)) {
-        addProduct(tenantSlug, productId);
+        addProduct(productId);
       }
     },
-    [addProduct, isProductInCart, tenantSlug],
+    [addProduct, isProductInCart],
   );
   const handleRemoveProduct = useCallback(
     (productId: string) => {
       if (isProductInCart(productId)) {
-        removeProduct(tenantSlug, productId);
+        removeProduct(productId);
       }
     },
-    [isProductInCart, removeProduct, tenantSlug],
+    [isProductInCart, removeProduct],
   );
 
   return {
@@ -54,7 +51,6 @@ export const useCart = (tenantSlug: string) => {
     addProduct: handleAddProduct,
     removeProduct: handleRemoveProduct,
     clearCart: clearTenantCart,
-    clearAllCarts: clearAllCarts,
     isProductInCart,
     toggleProduct,
     totalItems: productIds.length,

@@ -4,13 +4,12 @@ import { useCart } from '@/modules/checkout/hooks/use-cart';
 import Link from 'next/link';
 
 interface Props {
-  tenantSlug: string;
   productId: string;
   isPurchased?: boolean;
 }
 
-export const CartButton = ({ tenantSlug, productId, isPurchased }: Props) => {
-  const cart = useCart(tenantSlug);
+export const CartButton = ({ productId, isPurchased }: Props) => {
+  const cart = useCart();
   if (isPurchased) {
     <Button variant={'elevated'} asChild className="flex-1 font-medium bg-pink-300">
       <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/library/${productId}`}>View in library</Link>

@@ -134,66 +134,95 @@ const categories = [
   },
 ];
 
-const seed = async () => {
-  const payload = await getPayload({
-    config,
+// Helpers
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+async function ensureAdmin(payload: any) {
+  const existing = await payload.find({
+    collection: 'users',
+    limit: 1,
+    pagination: false,
+    where: { email: { equals: 'admin@example.com' } },
   });
 
-  // const account = await stripe.accounts.create({});
+  if (existing.totalDocs > 0) {
+    console.log('✔ Admin ya existe, skip');
+    return existing.docs[0];
+  }
 
-  // const adminTenant = await payload.create({
-  //   collection: 'tenants',
-  //   data: {
-  //     name: 'Admin',
-  //     slug: 'admin',
-  //     stripeAccountId: account.id,
-  //   },
-  // });
-
-  // Create super admin user
-  await payload.create({
+  return payload.create({
     collection: 'users',
+    overrideAccess: true,
     data: {
       email: 'admin@example.com',
       password: 'password',
-      roles: ['super-admin'],
+      roles: ['admin'], // ajustá según tu schema
       username: 'admin',
-      // tenants: [
-      //   {
-      //     tenant: adminTenant.id,
-      //   },
-      // ],
     },
   });
+}
+
+async function upsertCategory(
+  payload: any,
+  data: { name: string; slug: string; color?: string; parent?: string | null },
+) {
+  const found = await payload.find({
+    collection: 'categories',
+    limit: 1,
+    pagination: false,
+    where: { slug: { equals: data.slug } },
+  });
+
+  if (found.totalDocs > 0) {
+    const id = found.docs[0].id;
+    await payload.update({
+      collection: 'categories',
+      id,
+      overrideAccess: true,
+      data,
+    });
+    return { ...found.docs[0], id };
+  }
+
+  return payload.create({
+    collection: 'categories',
+    overrideAccess: true,
+    data,
+  });
+}
+
+const seed = async () => {
+  const payload = await getPayload({ config });
+
+  // Dejá que terminen índices iniciales (evita LockTimeout)
+  await sleep(300);
+
+  await ensureAdmin(payload);
 
   for (const category of categories) {
-    const parentCategory = await payload.create({
-      collection: 'categories',
-      data: {
-        name: category.name,
-        slug: category.slug,
-        color: category.color,
-        parent: null,
-      },
+    const parent = await upsertCategory(payload, {
+      name: category.name,
+      slug: category.slug,
+      color: category.color,
+      parent: null,
     });
-    for (const subcategory of category.subcategories || []) {
-      await payload.create({
-        collection: 'categories',
-        data: {
-          name: subcategory.name,
-          slug: subcategory.slug,
-          parent: parentCategory.id,
-        },
+
+    for (const sub of category.subcategories || []) {
+      await upsertCategory(payload, {
+        name: sub.name,
+        slug: sub.slug,
+        parent: parent.id,
       });
     }
   }
 };
 
-try {
-  await seed();
-  console.log('Seed successful');
-  process.exit(0);
-} catch (error) {
-  console.error(error);
-  process.exit(1);
-}
+seed()
+  .then(() => {
+    console.log('✅ Seed ok');
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

@@ -72,7 +72,6 @@ export interface Config {
     categories: Category;
     products: Product;
     tags: Tag;
-    tenants: Tenant;
     orders: Order;
     reviews: Review;
     'payload-locked-documents': PayloadLockedDocument;
@@ -90,7 +89,6 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
-    tenants: TenantsSelect<false> | TenantsSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -136,13 +134,7 @@ export interface UserAuthOperations {
 export interface User {
   id: string;
   username: string;
-  roles?: ('super-admin' | 'user')[] | null;
-  tenants?:
-    | {
-        tenant: string | Tenant;
-        id?: string | null;
-      }[]
-    | null;
+  roles?: ('admin' | 'user')[] | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -156,37 +148,10 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tenants".
- */
-export interface Tenant {
-  id: string;
-  /**
-   * This is the name of the store
-   */
-  name: string;
-  /**
-   * This is the subdomain for the store
-   */
-  slug: string;
-  image?: (string | null) | Media;
-  /**
-   * Stripe Account ID associated with this store
-   */
-  stripeAccountId: string;
-  /**
-   * You cannot create products until you submit your Stripe details
-   */
-  stripeDetailsSubmitted?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: string;
-  tenant?: (string | null) | Tenant;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -219,14 +184,13 @@ export interface Category {
   createdAt: string;
 }
 /**
- * You must verify your account before creating products
+ * Gestión de productos de la ferretería
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
  */
 export interface Product {
   id: string;
-  tenant?: (string | null) | Tenant;
   name: string;
   description?: {
     root: {
@@ -244,15 +208,14 @@ export interface Product {
     [k: string]: unknown;
   } | null;
   /**
-   * Precio en dolares
+   * Precio en pesos argentinos
    */
   price: number;
   category?: (string | null) | Category;
   image?: (string | null) | Media;
-  refundPolicy?: ('30_day' | '14_day' | '7_day' | '3_day' | '1_day' | 'no_refunds') | null;
   tags?: (string | Tag)[] | null;
   /**
-   * Protected content only visible to customers after purchase. Add product documentation, downloadable files, getting started guides, and bonus materias. Supports markdown format.
+   * Información detallada del producto, especificaciones técnicas, etc.
    */
   content?: {
     root: {
@@ -270,13 +233,17 @@ export interface Product {
     [k: string]: unknown;
   } | null;
   /**
-   * Archived products are not visible in your tenant
+   * Cantidad disponible en inventario
    */
-  isArchived?: boolean | null;
+  stock?: number | null;
   /**
-   * If checked products are not visible in the marketplace at all
+   * Código único del producto
    */
-  isPrivate?: boolean | null;
+  sku?: string | null;
+  /**
+   * Desmarcar para ocultar el producto del catálogo
+   */
+  isActive?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -352,10 +319,6 @@ export interface PayloadLockedDocument {
         value: string | Tag;
       } | null)
     | ({
-        relationTo: 'tenants';
-        value: string | Tenant;
-      } | null)
-    | ({
         relationTo: 'orders';
         value: string | Order;
       } | null)
@@ -412,12 +375,6 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   username?: T;
   roles?: T;
-  tenants?:
-    | T
-    | {
-        tenant?: T;
-        id?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -433,7 +390,6 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
-  tenant?: T;
   alt?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -465,17 +421,16 @@ export interface CategoriesSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
-  tenant?: T;
   name?: T;
   description?: T;
   price?: T;
   category?: T;
   image?: T;
-  refundPolicy?: T;
   tags?: T;
   content?: T;
-  isArchived?: T;
-  isPrivate?: T;
+  stock?: T;
+  sku?: T;
+  isActive?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -486,19 +441,6 @@ export interface ProductsSelect<T extends boolean = true> {
 export interface TagsSelect<T extends boolean = true> {
   name?: T;
   products?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tenants_select".
- */
-export interface TenantsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  image?: T;
-  stripeAccountId?: T;
-  stripeDetailsSubmitted?: T;
   updatedAt?: T;
   createdAt?: T;
 }

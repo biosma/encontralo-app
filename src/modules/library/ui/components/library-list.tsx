@@ -45,8 +45,6 @@ export const LibraryList = () => {
               id={product.id}
               name={product.name}
               imageUrl={product.image?.url}
-              tenantSlug={product.tenant?.slug}
-              tenantImageUrl={product.tenant?.image?.url}
               reviewRating={product.reviewRating}
               reviewCount={product.reviewCount}
             />
